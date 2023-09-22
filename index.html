@@ -218,8 +218,11 @@
       //      console.log(list) // prints ["a"]
       // 👉 HINT: if you are not feeling confident with map and filter, solve the problem with for loops,
       //      and with the piece of mind of all tests passing, refactor to use map/filter
-        constructor(...antNames) {
-        this.ants = antNames.map(name => ({ name, health: 100 }));
+      constructor(...antNames) {
+        this.ants = [];
+        for (const name of antNames) {
+          this.ants.push({ name, health: 100 });
+        }
       }
 
       work() {
@@ -227,31 +230,33 @@
           return "No ants here. Did you work them to death?";
         }
 
-        this.ants.forEach(ant => {
-          ant.health -= 20;
-        });
-
-        this.ants = this.ants.filter(ant => ant.health > 0);
-
-        const numAnts = this.ants.length;
-        if (numAnts > 0) {
-          return `${numAnts} ant${numAnts !== 1 ? 's' : ''} starting work!`;
-        } else {
-          return "No ants here. Did you work them to death?";
+        let count = this.ants.length;
+        for (let i = 0; i < this.ants.length; i++) {
+          this.ants[i].health -= 20;
+          if (this.ants[i].health <= 0) {
+            this.ants.splice(i, 1);
+            i--;  // Adjust index after splicing
+           count = Math.max(0, count - 0);
+          }
         }
+
+        return `${Math.max(0, count)} ant${count !== 1 ? 's' : 's'} starting work!`;
       }
 
-      feed(nameToFeed) {
-        const antToFeed = this.ants.find(ant => ant.name === nameToFeed);
-        if (antToFeed) {
-          antToFeed.health += 15;
-          return "Yum!";
-        } else {
-          return `${nameToFeed} not found!`;
+      feed(antName) {
+        let found = false;
+        for (const ant of this.ants) {
+          if (ant.name === antName) {
+            ant.health += 15;
+            found = true;
+            
+          }
         }
+
+        return found ? "Yum!" : `${antName} not found!`;
       }
     }
-
+    
     // 🧪 TESTS, do not make any changes below this line ===================
     // 🧪 TESTS, do not make any changes below this line ===================
     // 🧪 TESTS, do not make any changes below this line ===================
